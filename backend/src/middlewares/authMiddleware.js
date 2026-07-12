@@ -1,33 +1,42 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
-export const Protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
-    const token = req.cookies.transitOps || req.headers.authorization?.replace("Bearer ", "");
+    // Get token from cookie or Authorization header
+    const token =
+      req.cookies?.transitOps ||
+      req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      const error = new Error("Unauthorized! No token found");
-      error.statusCode = 401;
-      return next(error);
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized! No token found",
+      });
     }
 
-    const decode = jwt.verify(token, process.env.JWT_SECRET);
-    if (!decode) {
-      const error = new Error("Unauthorized! Please Login Again");
-      error.statusCode = 401;
-      return next(error);
+    // Verify JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find user
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized! User not found",
+      });
     }
 
-    const verifiedUser = await User.findById(decode.id);
-    if (!verifiedUser) {
-      const error = new Error("Unauthorized! Please Login Again");
-      error.statusCode = 401;
-      return next(error);
-    }
-    req.user = verifiedUser;
+    // Attach user to request
+    req.user = user;
 
     next();
   } catch (error) {
-    next(error);
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+      error: error.message,
+    });
   }
 };

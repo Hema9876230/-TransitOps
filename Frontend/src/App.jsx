@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AppRoutes from "./routes/AppRoutes.jsx";
+import Vehicle from "./pages/Vehicle";
 
 function App() {
   const [theme, setTheme] = useState("light");
