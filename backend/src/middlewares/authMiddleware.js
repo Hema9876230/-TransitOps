@@ -1,11 +1,9 @@
 import jwt from "jsonwebtoken";
-import User from "../models/userProfileModel.js";
+import User from "../models/userModel.js";
 
 export const Protect = async (req, res, next) => {
   try {
-    const token = req.cookies.HealthUP;
-    console.log("cookies received" , token)
-    console.log("Token received in cookies:", token);
+    const token = req.cookies.transitOps || req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
       const error = new Error("Unauthorized! No token found");
@@ -14,7 +12,6 @@ export const Protect = async (req, res, next) => {
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decode);
     if (!decode) {
       const error = new Error("Unauthorized! Please Login Again");
       error.statusCode = 401;

@@ -4,15 +4,18 @@ import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
 import api from "../config/Api.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const { login, isLogin } = useAuth();
 
   const [formdata, setFormdata] = useState({
     name: "",
     email: "",
     password: "",
     role: "",
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -24,8 +27,15 @@ const SignupPage = () => {
       email: "",
       password: "",
       role: "",
+      confirmPassword: "",
     });
   };
+
+  React.useEffect(() => {
+    if (isLogin) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isLogin, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,20 +64,27 @@ const SignupPage = () => {
       return setError("Password is required.");
     }
 
+    if (password.length < 8) {
+      return setError("Password must be at least 8 characters long.");
+    }
+
+    if (password !== formdata.confirmPassword) {
+      return setError("Passwords do not match.");
+    }
+
     if (!role) {
       return setError("Please select your role.");
     }
 
     try {
       setLoading(true);
-      console.log(formdata);
-      const res = await api.post("/auth/register", formdata);
+      const { confirmPassword, ...payload } = formdata;
+      const res = await api.post("/auth/register", payload);
       handleClear();
-      alert(res.data.message);
+      login(res.data.user, res.data.token, true);
       navigate("/dashboard");
     } catch (err) {
-      console.log(error);
-      setError("Unable to create account. Please try again.");
+      setError(err.response?.data?.message || "Unable to create account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -115,6 +132,17 @@ const SignupPage = () => {
             type="password"
             icon={FiLock}
             value={formdata.password}
+            onChange={handleChange}
+            placeholder="••••••••"
+            required
+          />
+
+          <Input
+            label="Confirm Password"
+            name="confirmPassword"
+            type="password"
+            icon={FiLock}
+            value={formdata.confirmPassword}
             onChange={handleChange}
             placeholder="••••••••"
             required

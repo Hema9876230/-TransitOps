@@ -1,8 +1,9 @@
 import React from "react";
 import { FiSearch, FiBell, FiMenu } from "react-icons/fi";
 import ThemeToggle from "./ThemeToggle.jsx";
+import Button from "./Button.jsx";
 
-function Navbar({ user, theme, setTheme, onMenuClick }) {
+function Navbar({ user, theme, setTheme, onMenuClick, onLogout }) {
   return (
     <header className="glass sticky top-0 z-30 px-4 py-3 flex items-center justify-between gap-4 border-b border-gray-200/60 dark:border-gray-800/60">
       <div className="flex items-center gap-3 flex-1">
@@ -43,6 +44,11 @@ function Navbar({ user, theme, setTheme, onMenuClick }) {
             <p className="text-sm font-medium text-gray-800 dark:text-white">{user?.name || "Guest"}</p>
             <p className="text-xs text-gray-400">{user?.role || "—"}</p>
           </div>
+          {onLogout && (
+            <Button variant="outline" onClick={onLogout} className="ml-2 px-3 py-2 text-xs">
+              Logout
+            </Button>
+          )}
         </div>
       </div>
     </header>

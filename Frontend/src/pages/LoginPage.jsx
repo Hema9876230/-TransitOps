@@ -3,14 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock } from "react-icons/fi";
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
+import api from "../config/Api.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login, isLogin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  useEffect(() => {
+    if (isLogin) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isLogin, navigate]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("rememberEmail");
@@ -24,21 +33,30 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!email.trim()) {
+      setError("Email is required.");
+      return;
+    }
+
+    if (!password.trim()) {
+      setError("Password is required.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
-    console.log({ email, password });
 
     try {
       const res = await api.post("/auth/login", { email, password });
-      alert(res.data.message);
-      saveAuth(res.data.data);
-      if (rememberMe) {
-        localStorage.setItem("TansistOps", res.data.data);
-      } else {
-        sessionStorage.setItem("TansistOps", res.data.data);
-      }
+      login(res.data.user, res.data.token, rememberMe);
       navigate("/dashboard");
     } catch (err) {
-      setError("Login failed. Please check your credentials and try again.");
+      setError(err.response?.data?.message || "Login failed. Please check your credentials and try again.");
     } finally {
       setLoading(false);
     }

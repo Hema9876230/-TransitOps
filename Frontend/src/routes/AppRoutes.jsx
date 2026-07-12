@@ -5,17 +5,56 @@ import DashboardPage from "../pages/DashboardPage.jsx";
 import PlaceholderPage from "../pages/PlaceholderPage.jsx";
 import DashboardLayout from "../layouts/DashboardLayout.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+
+function ProtectedRoute({ children }) {
+  const { isLogin } = useAuth();
+
+  if (!isLogin) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
+
+function PublicRoute({ children }) {
+  const { isLogin } = useAuth();
+
+  if (isLogin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
 
 function AppRoutes({ theme, setTheme }) {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignupPage />} />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <SignupPage />
+          </PublicRoute>
+        }
+      />
 
       <Route
         path="/dashboard"
-        element={<DashboardLayout theme={theme} setTheme={setTheme} />}
+        element={
+          <ProtectedRoute>
+            <DashboardLayout theme={theme} setTheme={setTheme} />
+          </ProtectedRoute>
+        }
       >
         <Route index element={<DashboardPage />} />
         <Route path="fleet" element={<PlaceholderPage title="Fleet" />} />
