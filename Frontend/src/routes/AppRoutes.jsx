@@ -5,6 +5,8 @@ import DashboardPage from "../pages/DashboardPage.jsx";
 import PlaceholderPage from "../pages/PlaceholderPage.jsx";
 import DashboardLayout from "../layouts/DashboardLayout.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
+import FleetPage from "../pages/FleetPage.jsx";
+import VehicleDetailsPage from "../pages/VehicleDetailsPage.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 function ProtectedRoute({ children }) {
@@ -57,7 +59,8 @@ function AppRoutes({ theme, setTheme }) {
         }
       >
         <Route index element={<DashboardPage />} />
-        <Route path="fleet" element={<PlaceholderPage title="Fleet" />} />
+        <Route path="fleet" element={<FleetPage />} />
+        <Route path="fleet/:vehicleId" element={<VehicleDetailsPage />} />
         <Route path="drivers" element={<PlaceholderPage title="Drivers" />} />
         <Route path="trips" element={<PlaceholderPage title="Trips" />} />
         <Route

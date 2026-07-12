@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import "dotenv/config";
 import connectDB from "./src/config/db.js";
 import authRouter from "./src/routers/authRouter.js";
+import vehicleRoutes from "./src/routers/vehicleRoutes.js";
+import { errorHandler } from "./src/middlewares/errorMiddleware.js";
 
 const app = express();
 
@@ -14,6 +16,10 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 app.use("/auth", authRouter);
+app.use("/api/vehicles", vehicleRoutes);
+
+// Global Error Handler (Always Last)
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   console.log("server is working");
