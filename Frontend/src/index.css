@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-200;
+}
+
+/* Simple glass effect utility, reused across cards/navbar/sidebar */
+.glass {
+  @apply bg-white/70 dark:bg-gray-900/60 backdrop-blur-md border border-gray-200/60 dark:border-gray-800/60;
+}
+
+/* Thin scrollbar for sidebar / tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+}
