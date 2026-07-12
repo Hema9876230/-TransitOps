@@ -26,13 +26,6 @@ function Navbar({ user, theme, setTheme, onMenuClick, onLogout }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <button
-          aria-label="Notifications"
-          className="relative p-2 rounded-xl glass hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-600 dark:text-gray-300"
-        >
-          <FiBell size={18} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#ef4444]" />
-        </button>
 
         <ThemeToggle theme={theme} setTheme={setTheme} />
 

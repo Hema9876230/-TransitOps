@@ -18,7 +18,11 @@ const navItems = [
   { label: "Drivers", icon: FiUsers, path: "/dashboard/drivers" },
   { label: "Trips", icon: FiMap, path: "/dashboard/trips" },
   { label: "Maintenance", icon: FiTool, path: "/dashboard/maintenance" },
-  { label: "Fuel & Expenses", icon: FiDroplet, path: "/dashboard/fuel-expenses" },
+  {
+    label: "Fuel & Expenses",
+    icon: FiDroplet,
+    path: "/dashboard/fuel-expenses",
+  },
   { label: "Analytics", icon: FiBarChart2, path: "/dashboard/analytics" },
   { label: "Settings", icon: FiSettings, path: "/dashboard/settings" },
 ];
@@ -54,11 +58,10 @@ function Sidebar({ isOpen, onClose }) {
     <>
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 h-screen sticky top-0 glass border-r border-gray-200/60 dark:border-gray-800/60 px-3 py-5">
-        <div className="flex items-center gap-2 px-2">
-          <div className="w-8 h-8 rounded-lg bg-[#f59e0b] flex items-center justify-center text-white font-bold">
-            F
-          </div>
-          <span className="font-semibold text-lg text-gray-800 dark:text-white">FleetOps</span>
+        <div>
+          <span className="font-semibold text-lg text-gray-800 dark:text-white">
+            TransistOps
+          </span>
         </div>
         <NavItems />
       </aside>
@@ -69,13 +72,15 @@ function Sidebar({ isOpen, onClose }) {
           <div className="fixed inset-0 bg-black/40" onClick={onClose} />
           <aside className="relative w-64 h-full glass px-3 py-5 z-50">
             <div className="flex items-center justify-between px-2">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-[#f59e0b] flex items-center justify-center text-white font-bold">
-                  F
-                </div>
-                <span className="font-semibold text-lg text-gray-800 dark:text-white">FleetOps</span>
+              <div>
+                <span className="font-semibold text-lg text-gray-800 dark:text-white">
+                  TransistOps
+                </span>
               </div>
-              <button onClick={onClose} className="text-gray-500 dark:text-gray-300">
+              <button
+                onClick={onClose}
+                className="text-gray-500 dark:text-gray-300"
+              >
                 <FiX size={20} />
               </button>
             </div>
