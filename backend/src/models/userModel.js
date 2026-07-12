@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -23,10 +24,9 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+  },
 
-    isActive: { type: Boolean, default: true },
-    },
-    { timestamps: true },
+  { timestamps: true },
 );
 
 export default mongoose.model("User", userSchema);

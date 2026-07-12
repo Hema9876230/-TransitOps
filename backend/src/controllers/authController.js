@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import {genToken} from "../utils/authToken.js"
 
-
 export const UserRegister = async (req, res, next) => {
   try {
     //accept data from fronted
@@ -20,17 +19,11 @@ console.log(name,email,password,role);
 
     //check for duplicate user before refistration
     const existingUser = await User.findOne({
-      $or: [{ email }, { mobileNumber }],
+      email: email.toLowerCase(),
     });
 
     if (existingUser) {
-      let message = "";
-
-      if (existingUser.email === email) {
-        message = "Email already registered";
-      } else if (existingUser.mobileNumber === mobileNumber) {
-        message = "Mobile number already registered";
-      }
+      let message = "Email already registered";
 
       const error = new Error(message);
       error.statusCode = 409;
@@ -44,13 +37,14 @@ console.log(name,email,password,role);
     const hashPassword = await bcrypt.hash(password, salt);
 
     //use placeholder image for profile photo
-    const photoURL = `https://placehold.co/600x400?text=${fullName.charAt(0).toUpperCase()}`;
+    const photoURL = `https://placehold.co/600x400?text=${name.charAt(0).toUpperCase()}`;
     const photo = {
       url: photoURL,
     };
 
     //save data to database
     const newUser = await User.create({
+      name,
       name,
       email: email.toLowerCase(),
       password: hashPassword,
@@ -63,6 +57,7 @@ console.log(name,email,password,role);
     next(error);
   }
 };
+
 
 export const UserLogin = async (req, res, next) => {
   try {

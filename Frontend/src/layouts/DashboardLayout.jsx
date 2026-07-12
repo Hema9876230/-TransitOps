@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar.jsx";
 import Navbar from "../components/Navbar.jsx";
-import { getUser } from "../utils/auth.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function DashboardLayout({ theme, setTheme }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const user = getUser();
+  const { user } = useAuth;
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950">
