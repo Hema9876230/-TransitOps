@@ -1,6 +1,15 @@
 import React from "react";
 
-function Input({ label, type = "text", value, onChange, placeholder = "", required = false, icon: Icon }) {
+function Input({
+  label,
+  name,
+  type = "text",
+  value,
+  onChange,
+  placeholder = "",
+  required = false,
+  icon: Icon,
+}) {
   return (
     <div className="w-full">
       {label && (
@@ -8,13 +17,16 @@ function Input({ label, type = "text", value, onChange, placeholder = "", requir
           {label}
         </label>
       )}
+
       <div className="relative">
         {Icon && (
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
             <Icon size={16} />
           </span>
         )}
+
         <input
+          name={name}
           type={type}
           value={value}
           onChange={onChange}

@@ -1,61 +1,72 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiUser, FiMail, FiLock } from "react-icons/fi";
-
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
-// import { registerUser } from "../services/authService.js";
+import api from "../config/Api.jsx";
 
 const SignupPage = () => {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const [formdata, setFormdata] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+  });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleClear = () => {
+    setFormdata({
+      name: "",
+      email: "",
+      password: "",
+      role: "",
+    });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormdata((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    const { name, email, password, role } = formdata;
+
     if (!name.trim()) {
       return setError("Full name is required.");
     }
 
-    if (password !== confirmPassword) {
-      return setError("Passwords do not match.");
+    if (!email.trim()) {
+      return setError("Email is required.");
     }
 
-    if (!agree) {
-      return setError("Please accept the Terms & Privacy Policy.");
+    if (!password.trim()) {
+      return setError("Password is required.");
+    }
+
+    if (!role) {
+      return setError("Please select your role.");
     }
 
     try {
       setLoading(true);
-
-      // Backend integration
-      // await registerUser({
-      //   name,
-      //   email,
-      //   password,
-      // });
-
-      console.log({
-        name,
-        email,
-        password,
-        role,
-      });
-
-      if (!role) {
-        return setError("Please select your role.");
-      }
-      alert("Account created successfully!");
-      navigate("/login");
+      console.log(formdata);
+      const res = await api.post("/auth/register", formdata);
+      handleClear();
+      alert(res.data.message);
+      navigate("/dashboard");
     } catch (err) {
+      console.log(error);
       setError("Unable to create account. Please try again.");
     } finally {
       setLoading(false);
@@ -78,30 +89,33 @@ const SignupPage = () => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
             label="Full Name"
+            name="name"
             type="text"
             icon={FiUser}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formdata.name}
+            onChange={handleChange}
             placeholder="John Doe"
             required
           />
 
           <Input
             label="Email"
+            name="email"
             type="email"
             icon={FiMail}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formdata.email}
+            onChange={handleChange}
             placeholder="you@company.com"
             required
           />
 
           <Input
             label="Password"
+            name="password"
             type="password"
             icon={FiLock}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formdata.password}
+            onChange={handleChange}
             placeholder="••••••••"
             required
           />
@@ -112,8 +126,9 @@ const SignupPage = () => {
             </label>
 
             <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              name="role"
+              value={formdata.role}
+              onChange={handleChange}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#f59e0b] cursor-pointer"
               required
             >

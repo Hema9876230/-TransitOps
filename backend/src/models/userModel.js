@@ -1,16 +1,10 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
-    {
-        fullName: {
+  {
+    name: {
       type: String,
       required: true,
-    },
-
-    mobileNumber: {
-      type: String,
-      required: true,
-      unique: true,
     },
 
     email: {
@@ -30,10 +24,9 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+  },
 
-    isActive: { type: Boolean, default: true },
-    },
-    { timestamps: true },
+  { timestamps: true },
 );
 
 export default mongoose.model("User", userSchema);

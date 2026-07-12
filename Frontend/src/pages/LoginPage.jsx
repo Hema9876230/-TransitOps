@@ -3,10 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock } from "react-icons/fi";
 import Input from "../components/Input.jsx";
 import Button from "../components/Button.jsx";
-import { loginUser } from "../services/authService.js";
-import { saveAuth } from "../utils/auth.js";
 
-function LoginPage() {
+const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,18 +25,17 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    if (rememberMe) {
-      localStorage.setItem("rememberEmail", email);
-    } else {
-      localStorage.removeItem("rememberEmail");
-    }
+    console.log({ email, password });
 
     try {
-      // Backend does not exist yet — this call will fail until
-      // POST /auth/login is available. Expected response:
-      // { token, user: { name, email, role } }
-      const data = await loginUser(email, password);
-      saveAuth(data.token, data.user);
+      const res = await api.post("/auth/login", { email, password });
+      alert(res.data.message);
+      saveAuth(res.data.data);
+      if (rememberMe) {
+        localStorage.setItem("TansistOps", res.data.data);
+      } else {
+        sessionStorage.setItem("TansistOps", res.data.data);
+      }
       navigate("/dashboard");
     } catch (err) {
       setError("Login failed. Please check your credentials and try again.");
@@ -55,11 +52,6 @@ function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
       <div className="w-full max-w-md glass rounded-2xl shadow-lg p-8">
-        <div className="flex flex-col items-center">
-          <div className="w-10 h-10 rounded-full bg-[#f59e0b] flex items-center justify-center text-white font-bold text-xl">
-            F
-          </div>
-        </div>
         <div className="flex flex-col mb-6">
           <div className="text-start">
             <h1 className="text-lg font-semibold mt-3 text-gray-900 dark:text-white">
@@ -140,6 +132,6 @@ function LoginPage() {
       </div>
     </div>
   );
-}
+};
 
 export default LoginPage;

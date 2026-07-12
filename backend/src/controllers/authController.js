@@ -6,37 +6,30 @@ const generateToken = (user) =>
   jwt.sign(
     { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
-
 
 export const UserRegister = async (req, res, next) => {
   try {
     //accept data from fronted
-    const { fullName, mobileNumber, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     //verify that all data exist
-    if (!fullName || !mobileNumber || !email || !password) {
+    if (!name || !email || !password || !role) {
       const error = new Error("All Field Required");
       error.statusCode = 400;
       return next(error);
     }
 
-    console.log({ fullName, mobileNumber, email, password });
+    console.log({ name, email, password, role });
 
     //check for duplicate user before refistration
     const existingUser = await User.findOne({
-      $or: [{ email }, { mobileNumber }],
+      email: email.toLowerCase(),
     });
 
     if (existingUser) {
-      let message = "";
-
-      if (existingUser.email === email) {
-        message = "Email already registered";
-      } else if (existingUser.mobileNumber === mobileNumber) {
-        message = "Mobile number already registered";
-      }
+      let message = "Email already registered";
 
       const error = new Error(message);
       error.statusCode = 409;
@@ -57,11 +50,11 @@ export const UserRegister = async (req, res, next) => {
 
     //save data to database
     const newUser = await User.create({
-      fullName,
+      name,
       email: email.toLowerCase(),
-      mobileNumber,
       password: hashPassword,
       photo,
+      role,
     });
 
     console.log(newUser);
