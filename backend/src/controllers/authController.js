@@ -1,12 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
-import {genToken} from "../utils/authToken.js"
+import { genToken } from "../utils/authToken.js";
 
 export const UserRegister = async (req, res, next) => {
   try {
     //accept data from fronted
-    const { name, email, password,role } = req.body;
+    const { name, email, password, role } = req.body;
 
     //verify that all data exist
     if (!name || !email || !password || !role) {
@@ -15,7 +15,7 @@ export const UserRegister = async (req, res, next) => {
       return next(error);
     }
 
-console.log(name,email,password,role);
+    console.log(name, email, password, role);
 
     //check for duplicate user before refistration
     const existingUser = await User.findOne({
@@ -45,30 +45,31 @@ console.log(name,email,password,role);
     //save data to database
     const newUser = await User.create({
       name,
-      name,
       email: email.toLowerCase(),
       password: hashPassword,
       role,
     });
+    const user = newUser.toObject();
+    delete user.password;
 
-    console.log(newUser);
-    res.status(201).json({ message: "Registration Successfull !" });
+    const token = genToken(newUser, res);
+    res
+      .status(201)
+      .json({ message: "Registration Successfull !", user, token });
   } catch (error) {
     next(error);
   }
 };
 
-
 export const UserLogin = async (req, res, next) => {
   try {
     //fetch data from fronted
-    const { identifier, email, password } = req.body;
-    const loginIdentifier = identifier || email;
+    const { email, password } = req.body;
 
     console.log(req.body);
 
     //verify that all data exist
-    if (!loginIdentifier || !password) {
+    if (!email || !password) {
       const error = new Error("All Field Required");
       error.statusCode = 400;
       return next(error);
@@ -76,7 +77,7 @@ export const UserLogin = async (req, res, next) => {
 
     //check for if user is registered or not
     const existingUser = await User.findOne({
-      $or: [{ email: loginIdentifier }, { mobileNumber: loginIdentifier }],
+      email,
     });
     if (!existingUser) {
       const error = new Error("User not registered");
@@ -93,12 +94,11 @@ export const UserLogin = async (req, res, next) => {
     }
 
     //Token Genration will be done here
-    const token = generateToken(existingUser);
+    const token = genToken(existingUser, res);
     const user = {
       id: existingUser._id,
-      fullName: existingUser.fullName,
+      name: existingUser.name,
       email: existingUser.email,
-      mobileNumber: existingUser.mobileNumber,
       role: existingUser.role,
     };
 
