@@ -475,19 +475,6 @@ This project demonstrates:
 
 ---
 
-# 👩‍💻 Author
-
-**Hema Rani**
-
-B.Tech CSE (AI & ML)
-
-Full Stack MERN Developer
-
-GitHub: https://github.com/yourusername
-
-LinkedIn: https://linkedin.com/in/yourprofile
-
----
 
 # ⭐ Support
 
