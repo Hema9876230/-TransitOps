@@ -3,7 +3,7 @@ import axios from "axios";
 // Central axios instance. Backend does not exist yet — point this
 // baseURL at your real API server when it's ready.
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:4500/",
   headers: {
     "Content-Type": "application/json",
   },
